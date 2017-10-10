@@ -43,7 +43,7 @@ Namespace PlexIsBusyPlugin
 
                     If String.IsNullOrWhiteSpace(m_plex_xml_path) = False AndAlso IO.File.Exists(m_plex_xml_path) Then
 
-                        m_plex_media = XMLHelper.XMLDeSerialize(m_plex_media, m_plex_xml_path)
+                        m_plex_media = CType(XMLDeSerialize(m_plex_media, m_plex_xml_path), Plex.MediaContainer)
 
                         If IsNothing(m_plex_media) = False AndAlso IsNothing(m_plex_media.size) = False Then
 
