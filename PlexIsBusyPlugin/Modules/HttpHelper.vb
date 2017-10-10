@@ -2,7 +2,7 @@
 Imports System.Threading.Tasks
 
 Module HttpHelper
-    Public Async Function DownloadFile2Temp(ByVal _url As String) As Task(Of String)
+    Public Async Function DownloadFile2Temp(ByVal _url As Uri) As Task(Of String)
 
         Dim _http_client As HttpClient = New HttpClient
         Dim _http_response As HttpResponseMessage
@@ -11,7 +11,7 @@ Module HttpHelper
 
         Try
 
-            _http_client.BaseAddress = New Uri(_url)
+            _http_client.BaseAddress = _url
             ' _http_client.Timeout = TimeSpan.FromSeconds(_timeout)
 
             _http_response = Await _http_client.GetAsync(_url)

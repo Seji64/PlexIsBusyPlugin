@@ -35,7 +35,11 @@ Namespace PlexIsBusyPlugin
 
                 If String.IsNullOrWhiteSpace(m_pluginSettings.PlexURL) = False Then
 
-                    m_plex_xml_path = HttpHelper.DownloadFile2Temp(m_pluginSettings.PlexURL).Result
+                    Dim m_plex_query_url As Uri = Nothing
+
+                    Uri.TryCreate(New Uri(m_pluginSettings.PlexURL), "/status/sessions", m_plex_query_url)
+
+                    m_plex_xml_path = HttpHelper.DownloadFile2Temp(m_plex_query_url).Result
 
                     If String.IsNullOrWhiteSpace(m_plex_xml_path) = False AndAlso IO.File.Exists(m_plex_xml_path) Then
 
@@ -45,14 +49,13 @@ Namespace PlexIsBusyPlugin
 
                             If m_plex_media.size > 0 Then
 
-                                m_log_message.AppendLine("Plex is Busy serving stuff!")
-                                m_log_message.AppendLine("")
-                                m_log_message.AppendLine("Details:")
+                                m_log_message.Append(String.Format("Plex is busy! (Media Count: {0})", m_plex_media.size))
 
                                 If IsNothing(m_plex_media.Video) = False Then
 
                                     For Each _video In m_plex_media.Video
 
+                                        m_log_message.AppendLine("")
                                         m_log_message.AppendLine("Type: Video")
                                         m_log_message.AppendLine(String.Format("Video Title: {0}", _video.title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _video.Player.title))
@@ -67,6 +70,7 @@ Namespace PlexIsBusyPlugin
 
                                     For Each _track In m_plex_media.Track
 
+                                        m_log_message.AppendLine("")
                                         m_log_message.AppendLine("Type: Music/Track")
                                         m_log_message.AppendLine(String.Format("Track/Music Title: {0}", _track.title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _track.Player.title))
@@ -82,7 +86,7 @@ Namespace PlexIsBusyPlugin
 
                                     For Each _photo In m_plex_media.Track
 
-
+                                        m_log_message.AppendLine("")
                                         m_log_message.AppendLine("Type: Photo")
                                         m_log_message.AppendLine(String.Format("Photo Title: {0}", _photo.title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _photo.Player.title))
