@@ -2,13 +2,13 @@
 <WsapmPlugin>
   <DescriptionSet lang="en">
     <PluginName>PlexIsBusy</PluginName>
-    <Description>Plugin for standby suppression if any removable devices are present</Description>
+    <Description>Plugin to suppress standby mode when streaming media from Plex Media Server</Description>
     <AuthorName>Seji</AuthorName>
   </DescriptionSet>
 
   <DescriptionSet lang="de">
     <PluginName>PlexIsBusy</PluginName>
-    <Description>Plugin zum Unterdrücken des Standby wenn ein oder mehrere definierte Benutzer angemeldet und aktiv sind</Description>
+    <Description>Plugin zur Unterdrückung des Standby-Modus wenn Medien vom Plex Media Server gestreamt werden</Description>
     <AuthorName>Seji</AuthorName>
   </DescriptionSet>
 </WsapmPlugin>

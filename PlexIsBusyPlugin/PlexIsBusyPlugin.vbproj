@@ -88,7 +88,8 @@
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -102,11 +103,28 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DelegateCommand.vb" />
     <Compile Include="Models\PlexIsBusyPluginSettings.vb" />
-    <Compile Include="Modules\HttpHelper.vb" />
+    <Compile Include="Models\Plex\PlexMedia.vb" />
+    <Compile Include="Models\Plex\PlexNowPlaying.vb" />
+    <Compile Include="Models\Plex\PlexPhoto.vb" />
+    <Compile Include="Models\Plex\PlexPlayer.vb" />
+    <Compile Include="Models\Plex\PlexTrack.vb" />
+    <Compile Include="Models\Plex\PlexUser.vb" />
+    <Compile Include="Models\Plex\PlexVideo.vb" />
     <Compile Include="PlexIsBusyPlugin.vb" />
     <Compile Include="PlexIsBusyPluginControl.xaml.vb">
       <DependentUpon>PlexIsBusyPluginControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ressources\Strings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Ressources\Strings.en.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.en.resx</DependentUpon>
     </Compile>
     <Compile Include="SettingsViewModel.vb" />
     <Compile Include="PropertyChangedBase.vb" />
@@ -126,7 +144,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Plex.vb" />
-    <Compile Include="Modules\XMLHelper.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -134,6 +151,16 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ressources\Strings.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.en.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>PlexIsBusyPlugin.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ressources\Strings.resx">
+      <CustomToolNamespace>PlexIsBusyPlugin.Resources</CustomToolNamespace>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +185,16 @@
     <None Include="PluginManifest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe_de.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

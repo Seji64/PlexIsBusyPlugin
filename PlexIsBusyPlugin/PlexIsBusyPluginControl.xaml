@@ -5,21 +5,73 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PlexIsBusyPlugin.PlexIsBusyPlugin"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res="clr-namespace:PlexIsBusyPlugin.PlexIsBusyPlugin.Resources"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    d:DesignHeight="80"
-    d:DesignWidth="300"
+    MinWidth="500"
+    MinHeight="520"
+    d:DesignHeight="520"
+    d:DesignWidth="500"
     mc:Ignorable="d">
     <DockPanel LastChildFill="True">
         <StackPanel>
-            <GroupBox Header="Help">
-                <TextBlock>
-                    Gib hier deine PLEX URL ein
-                </TextBlock>
+            <GroupBox Margin="0,0,0,5" Header="{x:Static res:Strings.GroupBox_General_Settings_Header}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="2,5,0,10"
+                        Text="{x:Static res:Strings.GroupBox_General_Settings_HelpText}"
+                        TextWrapping="Wrap" />
+                    <xctk:WatermarkTextBox
+                        Margin="5,0,5,10"
+                        Text="{Binding Settings.PlexURL}"
+                        Watermark="Plex URL" />
+                    <CheckBox
+                        Margin="5,0"
+                        Content="{x:Static res:Strings.CheckBox_detailed_report}"
+                        IsChecked="{Binding Settings.DetailedReport}" />
+                </StackPanel>
             </GroupBox>
-            <xctk:WatermarkTextBox
-                Margin="5,10,5,0"
-                Text="{Binding Settings.PlexURL}"
-                Watermark="Plex URL" />
+            <GroupBox Margin="0,0,0,10" Header="{x:Static res:Strings.GroupBox_Authentication_Token_Header}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="2,5,0,10"
+                        Text="{x:Static res:Strings.GroupBox_Authentication_Token_HelpText}"
+                        TextWrapping="Wrap" />
+                    <xctk:WatermarkTextBox
+                        Margin="5,5,5,0"
+                        Text="{Binding Settings.PlexUsername}"
+                        Watermark="Plex Username" />
+                    <xctk:WatermarkPasswordBox
+                        Name="PlexPasswordBox"
+                        Margin="5,5,5,0"
+                        Watermark="Plex Password" />
+
+                    <Button
+                        Margin="15,10"
+                        VerticalAlignment="Center"
+                        Command="{Binding GetPlexTokenCommad}"
+                        CommandParameter="{Binding ElementName=PlexPasswordBox}"
+                        Content="Get Token" />
+
+                    <xctk:WatermarkTextBox
+                        Margin="5"
+                        Text="{Binding Settings.PlexToken}"
+                        Watermark="Plex Token" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="{x:Static res:Strings.GroupBox_Test_Settings_Header}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="2,5,0,10"
+                        Text="{x:Static res:Strings.GroupBox_Test_Settings_HelpText}"
+                        TextWrapping="Wrap" />
+                    <Button
+                        Margin="15,10"
+                        VerticalAlignment="Center"
+                        Command="{Binding TestConfigCommad}"
+                        Content="Test Connection" />
+                </StackPanel>
+            </GroupBox>
+
         </StackPanel>
 
     </DockPanel>

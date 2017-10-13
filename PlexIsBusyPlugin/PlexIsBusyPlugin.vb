@@ -4,7 +4,7 @@ Imports Wsapm.Extensions
 
 Namespace PlexIsBusyPlugin
     <Export(GetType(WsapmPluginBase))>
-    <WsapmPlugin("PlexIsBusy", "v1.0.0", "{328DE8EF-D715-49B7-8C30-10008CA14822}")>
+    <WsapmPlugin("PlexIsBusy", "v1.0.2", "{328DE8EF-D715-49B7-8C30-10008CA14822}")>
     Public Class PlexIsBusyPlugin
         Inherits WsapmPluginAdvancedBase
 
@@ -27,9 +27,10 @@ Namespace PlexIsBusyPlugin
         Protected Overrides Function CheckPluginPolicy() As PluginCheckSuspendResult
 
             Dim m_pluginSettings As PlexIsBusyPluginSettings = CType(Me.CurrentSettings, PlexIsBusyPluginSettings)
-            Dim m_plex_media As New Plex.MediaContainer
+            Dim m_plex_media_xml As XDocument
             Dim m_plex_xml_path As String = String.Empty
             Dim m_log_message As New StringBuilder
+            Dim m_plex_helper As Plex
 
             Try
 
@@ -39,56 +40,53 @@ Namespace PlexIsBusyPlugin
 
                     Uri.TryCreate(New Uri(m_pluginSettings.PlexURL), "/status/sessions", m_plex_query_url)
 
-                    m_plex_xml_path = HttpHelper.DownloadFile2Temp(m_plex_query_url).Result
+                    m_plex_xml_path = Plex.DownloadPlexStatusXML(m_plex_query_url, m_pluginSettings.PlexToken).Result
 
                     If String.IsNullOrWhiteSpace(m_plex_xml_path) = False AndAlso IO.File.Exists(m_plex_xml_path) Then
 
-                        m_plex_media = CType(XMLDeSerialize(m_plex_media, m_plex_xml_path), Plex.MediaContainer)
+                        m_plex_media_xml = XDocument.Parse(My.Computer.FileSystem.ReadAllText(m_plex_xml_path, System.Text.Encoding.UTF8))
 
-                        If IsNothing(m_plex_media) = False AndAlso IsNothing(m_plex_media.size) = False Then
+                        If IsNothing(m_plex_media_xml) = False Then
 
-                            If m_plex_media.size > 0 Then
+                            m_plex_helper = New Plex(m_plex_media_xml)
 
-                                m_log_message.Append(String.Format("Plex is busy! (Media Count: {0})", m_plex_media.size))
+                            If m_plex_helper.GetMediaContainerSize > 0 Then
 
-                                If IsNothing(m_plex_media.Video) = False Then
+                                Dim m_now_playing As New PlexNowPlaying
 
-                                    For Each _video In m_plex_media.Video
+                                m_log_message.Append(String.Format(Resources.Strings.PluginCheckSuspendResult_Message, m_plex_helper.GetMediaContainerSize))
+
+                                If m_pluginSettings.DetailedReport = True Then
+
+                                    m_now_playing = m_plex_helper.GetNowPlaying()
+
+                                    For Each _video In m_now_playing.Videos
 
                                         m_log_message.AppendLine("")
-                                        m_log_message.AppendLine("Type: Video")
-                                        m_log_message.AppendLine(String.Format("Video Title: {0}", _video.title))
+                                        m_log_message.AppendLine(String.Format("Type: {0}", _video.Type))
+                                        m_log_message.AppendLine(String.Format("Video Title: {0}", _video.Title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _video.Player.title))
                                         m_log_message.AppendLine(String.Format("User Name: {0}", _video.User.title))
                                         m_log_message.AppendLine("################################################")
 
                                     Next
 
-                                End If
-
-                                If IsNothing(m_plex_media.Track) = False Then
-
-                                    For Each _track In m_plex_media.Track
+                                    For Each _track In m_now_playing.Tracks
 
                                         m_log_message.AppendLine("")
-                                        m_log_message.AppendLine("Type: Music/Track")
-                                        m_log_message.AppendLine(String.Format("Track/Music Title: {0}", _track.title))
+                                        m_log_message.AppendLine(String.Format("Type: {0}", _track.Type))
+                                        m_log_message.AppendLine(String.Format("Track/Music Title: {0}", _track.Title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _track.Player.title))
                                         m_log_message.AppendLine(String.Format("User Name: {0}", _track.User.title))
                                         m_log_message.AppendLine("################################################")
 
                                     Next
 
-                                End If
-
-
-                                If IsNothing(m_plex_media.Photo) = False Then
-
-                                    For Each _photo In m_plex_media.Track
+                                    For Each _photo In m_now_playing.Photos
 
                                         m_log_message.AppendLine("")
-                                        m_log_message.AppendLine("Type: Photo")
-                                        m_log_message.AppendLine(String.Format("Photo Title: {0}", _photo.title))
+                                        m_log_message.AppendLine(String.Format("Type: {0}", _photo.Type))
+                                        m_log_message.AppendLine(String.Format("Photo Title: {0}", _photo.Title))
                                         m_log_message.AppendLine(String.Format("Player Name: {0}", _photo.Player.title))
                                         m_log_message.AppendLine(String.Format("User Name: {0}", _photo.User.title))
                                         m_log_message.AppendLine("################################################")
